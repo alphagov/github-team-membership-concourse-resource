@@ -1,0 +1,6 @@
+#!/usr/bin/env sh
+
+set -eu
+
+cd /opt/resource
+python -m lib.check_script <&0

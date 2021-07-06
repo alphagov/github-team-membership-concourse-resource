@@ -1,0 +1,6 @@
+#!/usr/bin/env sh
+
+set -eu
+
+cd /opt/resource
+python -m lib.out_script
