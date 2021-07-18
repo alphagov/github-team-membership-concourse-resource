@@ -3,6 +3,7 @@ import json
 import sys
 from unittest.mock import patch
 
+from freezegun import freeze_time
 import pytest
 import requests_mock
 
@@ -26,10 +27,11 @@ class TestInScript:
             'team': 'John'
         },
         'version': {
-            'hash': '12a14115c9b3f5027ed3b983f1b9315cdf48239d807f5c50294e95312c6ae0c1'
+            'hash': '12a14115c9b3f5027ed3b983f1b9315cdf48239d807f5c50294e95312c6ae0c1-1583625600'
         }
     })
 
+    @freeze_time("2020-03-08")
     @requests_mock.Mocker(kw='req_mocker')
     def test_returns_the_version_and_writes_members_to_file(self, stdin_mock, temp_dir, **kwargs):
         with patch.object(sys, 'argv', ['_', temp_dir]):
@@ -51,7 +53,7 @@ class TestInScript:
             sys.stdout = sys.__stdout__
 
             assert captured_stdout.getvalue() == '{' \
-                '"version": {"hash": "12a14115c9b3f5027ed3b983f1b9315cdf48239d807f5c50294e95312c6ae0c1"}, ' \
+                '"version": {"hash": "12a14115c9b3f5027ed3b983f1b9315cdf48239d807f5c50294e95312c6ae0c1-1583625600"}, ' \
                 '"metadata": [' \
                     '{"name": "organisation", "value": "Flamingo"}, ' \
                     '{"name": "team", "value": "John"}' \
