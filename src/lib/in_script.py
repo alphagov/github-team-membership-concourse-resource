@@ -3,13 +3,13 @@
 import json
 import sys
 
-from .utils import call_github_api, eprint, get_hash_of_members, validate_source
+from .utils import call_github_api, eprint, get_hash_of_members, members_hash_from_version, validate_source
 
 
 def main():
     input_json = json.loads(sys.stdin.read())
     source = input_json.get("source")
-    requested_version = input_json.get("version").get('hash')
+    requested_version = input_json.get("version")
     destination_dir = sys.argv[1]
 
     validate_source(source)
@@ -17,10 +17,10 @@ def main():
 
     current_version = get_hash_of_members(response)
 
-    if requested_version != current_version:
+    if current_version != members_hash_from_version(requested_version):
         eprint(
-            f"[ERROR] Requested version ({requested_version[0:8]}) does not match current version ({current_version[0:8]})."
-            " The team membership was probably updated between the check and the get."
+            f"[ERROR] Requested version ({members_hash_from_version(requested_version)[0:8]}) does not match current "
+            f"version ({current_version[0:8]}). The team membership was probably updated between the check and the get."
         )
         exit(1)
 
@@ -29,7 +29,7 @@ def main():
             f.write(f"{member_login}\n")
 
     output = {
-        "version": {"hash": current_version},
+        "version": {"hash": requested_version.get("hash")},
         "metadata": [
             {"name": "organisation", "value": source['org']},
             {"name": "team", "value": source['team']},

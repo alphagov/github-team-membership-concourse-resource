@@ -50,3 +50,7 @@ def get_hash_of_members(response):
     for member in members:
         eprint(f"    {member}")
     return hashlib.sha256(''.join(members).encode('utf-8')).hexdigest()
+
+
+def members_hash_from_version(version):
+    return version.get('hash').split('-')[0]
